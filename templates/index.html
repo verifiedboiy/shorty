@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Spotify Cover Setup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+    <!-- Top Right Logo -->
+    <div class="top-logo">
+        <!-- Official Spotify SVG -->
+        <svg viewBox="0 0 168 168" width="38" height="38">
+            <circle fill="#1DB954" cx="84" cy="84" r="84" />
+            <path fill="#000"
+                d="M119 113c-2 3-6 4-9 2-25-15-57-18-95-8-4 1-8-1-9-5-1-4 1-8 5-9 42-11 78-7 106 10 4 2 5 7 2 10z" />
+            <path fill="#000"
+                d="M130 90c-2 3-7 4-10 2-28-17-70-22-103-10-4 1-9-1-10-5-1-4 1-9 5-10 38-12 85-7 117 12 4 2 5 7 1 11z" />
+            <path fill="#000"
+                d="M131 65c-33-20-88-22-119-11-5 2-10-1-12-6-2-5 1-10 6-12 36-13 97-10 136 14 4 3 6 9 3 13-3 4-9 6-14 2z" />
+        </svg>
+        <div class="spotify-text">Spotify</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <!-- Section 1 -->
+        <h1 class="user-name">IAN R BAEHR</h1>
+        <p class="sub-text">
+            Hello Ian R Baehr, upload a picture for your cover. Please note that this will be installed to your account
+            till you get your account login.
+        </p>
+
+        <!-- Section 2 Card -->
+        <div class="upload-card" onclick="document.getElementById('fileInput').click();">
+
+            <p class="card-text">Upload picture or take a picture</p>
+
+            <input type="file" id="fileInput" accept="image/*" capture="environment">
+
+            <!-- Image Preview -->
+            <img id="previewImage" class="preview-image" src="" alt="Preview">
+
+            <button id="uploadBtn" class="upload-btn">Upload</button>
+        </div>
+
+        <!-- Next Button -->
+        <button class="next-btn" onclick="window.location.href='/next';">
+            Next
+        </button>
+
+    </div>
+
+    <script>
+        const fileInput = document.getElementById("fileInput");
+        const previewImage = document.getElementById("previewImage");
+        const uploadBtn = document.getElementById("uploadBtn");
+
+        let selectedFile = null;
+
+        fileInput.addEventListener("change", function () {
+            const file = fileInput.files[0];
+            if (file) {
+                selectedFile = file;
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+
+                // reset button if user changes image again
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = "Upload";
+            }
+        });
+
+        uploadBtn.addEventListener("click", async function (event) {
+            event.stopPropagation();
+
+            if (!selectedFile) return;
+
+            uploadBtn.innerHTML = "<span class='spinner'></span>";
+            uploadBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append("image", selectedFile);
+
+            try {
+                const res = await fetch("/upload", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (data.ok) {
+                    uploadBtn.innerHTML = "Saved";
+                } else {
+                    uploadBtn.disabled = false;
+                    uploadBtn.innerHTML = "Upload";
+                }
+            } catch (err) {
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = "Upload";
+            }
+        });
+    </script>
+
+</body>
+
+</html>

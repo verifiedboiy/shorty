@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Uploads</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+    <!-- Top Right Logo (LOCKED - same SVG, no changes) -->
+    <div class="top-logo">
+        <svg viewBox="0 0 168 168" width="38" height="38">
+            <circle fill="#1DB954" cx="84" cy="84" r="84" />
+            <path fill="#000"
+                d="M119 113c-2 3-6 4-9 2-25-15-57-18-95-8-4 1-8-1-9-5-1-4 1-8 5-9 42-11 78-7 106 10 4 2 5 7 2 10z" />
+            <path fill="#000"
+                d="M130 90c-2 3-7 4-10 2-28-17-70-22-103-10-4 1-9-1-10-5-1-4 1-9 5-10 38-12 85-7 117 12 4 2 5 7 1 11z" />
+            <path fill="#000"
+                d="M131 65c-33-20-88-22-119-11-5 2-10-1-12-6-2-5 1-10 6-12 36-13 97-10 136 14 4 3 6 9 3 13-3 4-9 6-14 2z" />
+        </svg>
+        <div class="spotify-text">Spotify</div>
+    </div>
+
+    <div class="container">
+        <h1 class="user-name">Admin Uploads</h1>
+        <p class="sub-text">All uploaded cover images will appear here.</p>
+
+        {% if files|length == 0 %}
+        <div class="upload-card" style="padding:22px 20px;">
+            <p class="card-text">No uploads yet.</p>
+        </div>
+        {% else %}
+        <div class="admin-grid">
+            {% for f in files %}
+            <div class="admin-item">
+                <div class="admin-img-wrap">
+                    <img src="{{ url_for('uploaded_file', filename=f) }}" alt="upload">
+                </div>
+
+                <div class="admin-filename">{{ f }}</div>
+
+                <div class="admin-actions">
+                    <!-- Download -->
+                    <a class="admin-btn admin-btn-download" href="{{ url_for('download_file', filename=f) }}">
+                        Download
+                    </a>
+
+                    <!-- Delete -->
+                    <form class="admin-delete-form" method="POST" action="{{ url_for('delete_file', filename=f) }}">
+                        <button type="submit" class="admin-btn admin-btn-delete">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // confirm delete (simple)
+        document.querySelectorAll(".admin-delete-form").forEach(form => {
+            form.addEventListener("submit", (e) => {
+                const ok = confirm("Delete this image?");
+                if (!ok) e.preventDefault();
+            });
+        });
+    </script>
+
+</body>
+
+</html>
