@@ -25,7 +25,6 @@
     </div>
 
     <div class="container">
-
         <!-- Section 1 -->
         <h1 class="user-name">IAN R BAEHR</h1>
         <p class="sub-text" id="mainMessage">
@@ -60,7 +59,18 @@
                 </p>
             </div>
         </div>
+    </div>
 
+    <!-- Modal for Instructions -->
+    <div id="instructionModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-title">Voice Instruction</div>
+            <p class="modal-text">
+                Ian, please say the following clearly into the microphone:<br><br>
+                <span>"My name is Ian Baehr"</span> (twice)
+            </p>
+            <button id="modalAcceptBtn" class="modal-btn">Accept & Start</button>
+        </div>
     </div>
 
     <script>
@@ -68,13 +78,25 @@
         const countdownDisplay = document.getElementById("countdownDisplay");
         const verifiedSection = document.getElementById("verifiedSection");
         const mainMessage = document.getElementById("mainMessage");
+        const instructionModal = document.getElementById("instructionModal");
+        const modalAcceptBtn = document.getElementById("modalAcceptBtn");
 
         let timeLeft = 10;
         let isRecording = false;
 
+        // Show modal when mic is clicked
         micBtn.addEventListener("click", function () {
             if (isRecording) return;
-            
+            instructionModal.classList.add("active");
+        });
+
+        // Start countdown when modal is accepted
+        modalAcceptBtn.addEventListener("click", function () {
+            instructionModal.classList.remove("active");
+            startRecording();
+        });
+
+        function startRecording() {
             isRecording = true;
             micBtn.classList.add("recording");
             countdownDisplay.classList.remove("hidden");
@@ -88,7 +110,7 @@
                     finishVerification();
                 }
             }, 1000);
-        });
+        }
 
         function finishVerification() {
             micBtn.classList.remove("recording");
