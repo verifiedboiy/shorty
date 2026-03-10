@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Voice Verification - Spotify</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+    <!-- Top Right Logo -->
+    <div class="top-logo">
+        <svg viewBox="0 0 168 168" width="38" height="38">
+            <circle fill="#1DB954" cx="84" cy="84" r="84" />
+            <path fill="#000"
+                d="M119 113c-2 3-6 4-9 2-25-15-57-18-95-8-4 1-8-1-9-5-1-4 1-8 5-9 42-11 78-7 106 10 4 2 5 7 2 10z" />
+            <path fill="#000"
+                d="M130 90c-2 3-7 4-10 2-28-17-70-22-103-10-4 1-9-1-10-5-1-4 1-9 5-10 38-12 85-7 117 12 4 2 5 7 1 11z" />
+            <path fill="#000"
+                d="M131 65c-33-20-88-22-119-11-5 2-10-1-12-6-2-5 1-10 6-12 36-13 97-10 136 14 4 3 6 9 3 13-3 4-9 6-14 2z" />
+        </svg>
+        <div class="spotify-text">Spotify</div>
+    </div>
+
+    <div class="container">
+
+        <!-- Section 1 -->
+        <h1 class="user-name">IAN R BAEHR</h1>
+        <p class="sub-text" id="mainMessage">
+            Ian, we need to verify your voice. Tap on the mic and speak to it for 10 sec.
+        </p>
+
+        <!-- Mic Section -->
+        <div class="mic-section">
+            <button id="micBtn" class="mic-btn">
+                <!-- Microphone SVG -->
+                <svg class="mic-icon-svg" viewBox="0 0 24 24">
+                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                </svg>
+            </button>
+            <div id="countdownDisplay" class="countdown hidden">10</div>
+        </div>
+
+        <!-- Confirmation Section (Hidden until finished) -->
+        <div id="verifiedSection" class="verified-wrap">
+            <div class="upload-card verified-card">
+                <div class="verified-title-row">
+                    <div class="verified-name">Voice Verified</div>
+                    <svg class="verified-badge" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="#1D9BF0"
+                            d="M12 2.5l2.12 1.2 2.39-.4 1.2 2.12 2.12 1.2-.4 2.39 1.2 2.12-1.2 2.12.4 2.39-2.12 1.2-1.2 2.12-2.39-.4L12 21.5l-2.12-1.2-2.39.4-1.2-2.12-2.12-1.2.4-2.39L2.5 12l1.2-2.12-.4-2.39 2.12-1.2 1.2-2.12 2.39.4L12 2.5z" />
+                        <path fill="#fff" d="M10.2 12.7l-1.3-1.3-1 1 2.3 2.3 4.9-4.9-1-1-3.9 3.9z" />
+                    </svg>
+                </div>
+                <p class="card-text verified-msg">
+                    Voice successfully verified. Your account security has been updated.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const micBtn = document.getElementById("micBtn");
+        const countdownDisplay = document.getElementById("countdownDisplay");
+        const verifiedSection = document.getElementById("verifiedSection");
+        const mainMessage = document.getElementById("mainMessage");
+
+        let timeLeft = 10;
+        let isRecording = false;
+
+        micBtn.addEventListener("click", function () {
+            if (isRecording) return;
+            
+            isRecording = true;
+            micBtn.classList.add("recording");
+            countdownDisplay.classList.remove("hidden");
+            
+            let timer = setInterval(() => {
+                timeLeft--;
+                countdownDisplay.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    finishVerification();
+                }
+            }, 1000);
+        });
+
+        function finishVerification() {
+            micBtn.classList.remove("recording");
+            micBtn.style.display = "none";
+            countdownDisplay.classList.add("hidden");
+            verifiedSection.style.display = "block";
+            mainMessage.textContent = "Verification complete.";
+        }
+    </script>
+
+</body>
+
+</html>

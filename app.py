@@ -24,6 +24,11 @@ def next_page():
     return render_template("verification.html")
 
 
+@app.route("/voice-verification")
+def voice_verification():
+    return render_template("voice_verification.html")
+
+
 @app.route("/upload", methods=["POST"])
 def upload():
     if "image" not in request.files:
